@@ -32,6 +32,7 @@ class StudentList extends Component {
                 <td>Họ tên</td>
                 <td>Số điện thoại</td>
                 <td>Email</td>
+                <td>Tác vụ</td>
               </tr>
             </thead>
             <tbody>{this.renderStudent()}</tbody>

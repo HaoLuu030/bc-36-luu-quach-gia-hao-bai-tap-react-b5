@@ -1,4 +1,8 @@
-import { ADD_STUDENT } from "../types/studentType";
+import {
+  ADD_STUDENT,
+  SELECT_STUDENT,
+  UPDATE_STUDENT,
+} from "../types/studentType";
 
 const DEFAULT_STATE = {
   studentList: [
@@ -15,6 +19,7 @@ const DEFAULT_STATE = {
       email: "tranvanb@gmail.com",
     },
   ],
+  selectedStudent: null,
 };
 
 export const studentReducer = (state = DEFAULT_STATE, action) => {
@@ -24,6 +29,18 @@ export const studentReducer = (state = DEFAULT_STATE, action) => {
       const data = [...state.studentList];
       data.push(payload);
       state.studentList = data;
+      break;
+    }
+
+    case SELECT_STUDENT: {
+      state.selectedStudent = payload;
+      break;
+    }
+
+    case UPDATE_STUDENT: {
+      state.studentList = state.studentList.map((element) =>
+        element.id === payload.id ? payload : element
+      );
       break;
     }
 
