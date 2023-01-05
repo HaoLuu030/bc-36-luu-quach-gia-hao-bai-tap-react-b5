@@ -1,0 +1,8 @@
+.card.studentFormContainer {
+  border: 0;
+}
+.card.studentFormContainer .card-header {
+  border: 0;
+  border-radius: 0;
+  font-size: 2rem;
+}/*# sourceMappingURL=styles.css.map */

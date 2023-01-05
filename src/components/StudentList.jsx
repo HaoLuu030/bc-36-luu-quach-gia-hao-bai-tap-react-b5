@@ -1,12 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { searchStudentAction } from "../store/actions/studentAction";
 import StudentItem from "./StudentItem";
 
 class StudentList extends Component {
-  renderStudent = () => {
-    return this.props.studentList.map((element) => {
+  // state = {
+  //   searchInput: "",
+  // };
+  renderStudent = (list = this.props.studentList) => {
+    if (this.props.searchList.length > 0) {
+      list = this.props.searchList;
+    }
+    return list.map((element) => {
       return <StudentItem student={element} key={element.id} />;
     });
+  };
+  handleSearch = (event) => {
+    return this.props.dispatch(searchStudentAction(event.target.value));
   };
   render() {
     return (
@@ -17,8 +27,11 @@ class StudentList extends Component {
               <div className="form-group mb-0">
                 <input
                   type="text"
-                  placeholder="Tìm kiếm"
+                  placeholder="Nhập tên sinh viên"
                   className="form-control"
+                  onBlur={(event) => {
+                    this.handleSearch(event);
+                  }}
                 />
               </div>
             </div>
@@ -46,6 +59,7 @@ class StudentList extends Component {
 const mapStateToProps = (state) => {
   return {
     studentList: state.studentReducer.studentList,
+    searchList: state.studentReducer.searchList,
   };
 };
 

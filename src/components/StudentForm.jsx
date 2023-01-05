@@ -1,8 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { addStudentAction, updateStudentAction } from "../store/actions/studentAction";
+import {
+  addStudentAction,
+  resetFormAction,
+  updateStudentAction,
+} from "../store/actions/studentAction";
 
 class StudentForm extends Component {
+  constructor(props) {
+    super(props);
+    this.formRef = React.createRef();
+  }
   state = {
     values: {
       id: "",
@@ -33,11 +41,19 @@ class StudentForm extends Component {
     if (!isValid) {
       return;
     }
-  // if a student has been selected then update instead of adding
+    // if a student has been selected then update instead of adding
     if (this.props.selectedStudent) {
-      return this.props.dispatch(updateStudentAction(this.state.values))
+      this.handleReset();
+      return this.props.dispatch(updateStudentAction(this.state.values));
     } else {
-      return this.props.dispatch(addStudentAction(this.state.values));
+      for (let element of this.props.studentList) {
+        if (element.id === this.state.values.id) {
+          alert("Mã sinh viên bị trùng lặp");
+          return;
+        }
+        this.handleReset();
+        return this.props.dispatch(addStudentAction(this.state.values));
+      }
     }
   };
   handleBlur = (event) => {
@@ -66,6 +82,18 @@ class StudentForm extends Component {
     });
   };
 
+  handleReset = () => {
+    this.setState({
+      values: {
+        id: "",
+        fullName: "",
+        phoneNumber: "",
+        email: "",
+      },
+    });
+    return this.props.dispatch(resetFormAction());
+  };
+
   static getDerivedStateFromProps = (nextProps, currentState) => {
     if (
       nextProps.selectedStudent &&
@@ -91,6 +119,8 @@ class StudentForm extends Component {
         </div>
         <div className="card-body">
           <form
+            ref={this.formRef}
+            noValidate
             onSubmit={(event) => {
               //prevent the page from reloading when clicking submit
               event.preventDefault();
@@ -176,8 +206,17 @@ class StudentForm extends Component {
               </div>
             </div>
             <div className="card-footer bg-white border-0">
-              <button className="btn btn-success" type="submit">
-                Thêm sinh viên
+              <button
+                disabled={!this.formRef.current?.checkValidity()}
+                className={`btn btn-${
+                  this.props.isUpdateStudent ? "primary" : "success"
+                } mr-2`}
+                type="submit"
+              >
+                {this.props.isUpdateStudent ? "Cập nhật" : "Thêm sinh viên"}
+              </button>
+              <button className="btn btn-danger" onClick={this.handleReset}>
+                Reset
               </button>
             </div>
           </form>
@@ -190,6 +229,8 @@ class StudentForm extends Component {
 const mapStateToProps = (state) => {
   return {
     selectedStudent: state.studentReducer.selectedStudent,
+    isUpdateStudent: state.studentReducer.isUpdateStudent,
+    studentList: state.studentReducer.studentList,
   };
 };
 

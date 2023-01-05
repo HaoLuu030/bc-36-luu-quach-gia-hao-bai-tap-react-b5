@@ -1,10 +1,16 @@
 import React, { Component } from "react";
-import { selectStudentAction } from "../store/actions/studentAction";
+import {
+  deleteStudentAction,
+  selectStudentAction,
+} from "../store/actions/studentAction";
 import { connect } from "react-redux";
 
 class StudentItem extends Component {
   setSelectedStudent = (student) => {
     return this.props.dispatch(selectStudentAction(student));
+  };
+  deleteStudent = (student) => {
+    return this.props.dispatch(deleteStudentAction(student));
   };
   render() {
     const { id, fullName, phoneNumber, email } = this.props.student;
@@ -25,7 +31,14 @@ class StudentItem extends Component {
               >
                 Sửa
               </button>
-              <button className="btn btn-danger">Xóa</button>
+              <button
+                className="btn btn-danger"
+                onClick={() => {
+                  this.deleteStudent(this.props.student);
+                }}
+              >
+                Xóa
+              </button>
             </div>
           </td>
         </tr>
